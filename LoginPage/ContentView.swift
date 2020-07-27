@@ -18,18 +18,10 @@ struct ContentView: View {
       VStack {
         WelcomeText()
         UserImage()
-        TextField("Username",text:$username)
-          .padding()
-          .background(lightGreyColor)
-          .cornerRadius(5.0)
-          .padding(.bottom, 20)
+        UsernameTextField(username: $username)
         // “ The SecureField needs the same arguments as a TextField. Therefore, we create another @State property called password and bind it to the SecureField”
         
-        SecureField("Password",text:$password)
-          .padding()
-          .background(lightGreyColor)
-          .cornerRadius(5.0)
-          .padding(.bottom, 20)
+        PasswordSecureField(password: $password)
         Button(action: {
           print("Button tapped")
         }, label: {
@@ -86,5 +78,32 @@ struct LoginButtonContent: View {
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView()
+  }
+}
+
+struct UsernameTextField: View {
+  
+  @Binding var username: String
+  // “What happens now when the user enters something is that the entered character gets passed from the UsernameTextField to the username property of the outsourced view which serves as a “bridge” and passes the data itself through the binding to the username State of the ContentView. ”
+  
+  var body: some View {
+    TextField("Username",text:$username)
+      .padding()
+      .background(lightGreyColor)
+      .cornerRadius(5.0)
+      .padding(.bottom, 20)
+  }
+}
+
+struct PasswordSecureField: View {
+  
+  @Binding var password: String
+  
+  var body: some View {
+    SecureField("Password",text:$password)
+      .padding()
+      .background(lightGreyColor)
+      .cornerRadius(5.0)
+      .padding(.bottom, 20)
   }
 }
