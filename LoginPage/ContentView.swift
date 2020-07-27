@@ -15,15 +15,18 @@ struct ContentView: View {
   @State var username = ""
   @State var password = ""
   @State var authenticationDidFail: Bool = false
-  @State var authenticationDidSucceed: Bool = true
+  @State var authenticationDidSucceed: Bool = false
+  @State var editingMode: Bool = false
   
+  let storedUsername = "Myusername"
+  let storedPassword = "Mypassword"
   
   var body: some View {
     ZStack {
       VStack {
         WelcomeText()
         UserImage()
-        UsernameTextField(username: $username)
+        UsernameTextField(username: $username, editingMode: $editingMode)
         // “ The SecureField needs the same arguments as a TextField. Therefore, we create another @State property called password and bind it to the SecureField”
         
         PasswordSecureField(password: $password)
@@ -33,7 +36,12 @@ struct ContentView: View {
             .foregroundColor(.red)
         }
         Button(action: {
-          print("Button tapped")
+          if self.username == storedUsername && self.password == storedPassword {
+            self.authenticationDidSucceed = true
+            self.authenticationDidFail = false
+          } else {
+            self.authenticationDidFail = true
+          }
         }, label: {
           LoginButtonContent()
         })
@@ -50,6 +58,7 @@ struct ContentView: View {
           .animation(Animation.default)
       }
     }
+    .offset(y: editingMode ? -150 : 0) // Move screen up when keyboard show
     
   }
 }
@@ -91,11 +100,6 @@ struct LoginButtonContent: View {
 }
 
 
-
-
-
-
-
 struct ContentView_Previews: PreviewProvider {
   static var previews: some View {
     ContentView()
@@ -105,14 +109,21 @@ struct ContentView_Previews: PreviewProvider {
 struct UsernameTextField: View {
   
   @Binding var username: String
+  
+  @Binding var editingMode: Bool
   // “What happens now when the user enters something is that the entered character gets passed from the UsernameTextField to the username property of the outsourced view which serves as a “bridge” and passes the data itself through the binding to the username State of the ContentView. ”
   
   var body: some View {
-    TextField("Username",text:$username)
-      .padding()
-      .background(lightGreyColor)
-      .cornerRadius(5.0)
-      .padding(.bottom, 20)
+    return TextField("Username", text: $username, onEditingChanged: {edit in
+      if edit == true
+      {self.editingMode = true}
+      else
+      {self.editingMode = false}
+    })
+    .padding()
+    .background(lightGreyColor)
+    .cornerRadius(5.0)
+    .padding(.bottom, 20)
   }
 }
 
