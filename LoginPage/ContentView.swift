@@ -14,7 +14,12 @@ struct ContentView: View {
   
   @State var username = ""
   @State var password = ""
-    var body: some View {
+  @State var authenticationDidFail: Bool = false
+  @State var authenticationDidSucceed: Bool = true
+  
+  
+  var body: some View {
+    ZStack {
       VStack {
         WelcomeText()
         UserImage()
@@ -22,6 +27,11 @@ struct ContentView: View {
         // “ The SecureField needs the same arguments as a TextField. Therefore, we create another @State property called password and bind it to the SecureField”
         
         PasswordSecureField(password: $password)
+        if authenticationDidFail {
+          Text("Information not correct. Try again.")
+            .offset( y: -10)
+            .foregroundColor(.red)
+        }
         Button(action: {
           print("Button tapped")
         }, label: {
@@ -30,7 +40,18 @@ struct ContentView: View {
         
       }
       .padding()
+      if authenticationDidSucceed {
+        Text("Login successful!")
+          .font(.headline)
+          .frame(width:250,height:80)
+          .background(Color.green)
+          .cornerRadius(20.0)
+          .foregroundColor(.white)
+          .animation(Animation.default)
+      }
     }
+    
+  }
 }
 
 
